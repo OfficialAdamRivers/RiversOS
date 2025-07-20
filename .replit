@@ -1,0 +1,54 @@
+modules = ["python-3.11", "nodejs-20"]
+
+[nix]
+channel = "stable-24_05"
+packages = ["ffmpeg-full", "glibcLocales", "iana-etc", "imagemagickBig", "libjpeg_turbo", "libpng", "pkg-config", "which"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "RiversOS"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "install_dependencies"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "RiversOS-Web"
+
+[[workflows.workflow]]
+name = "RiversOS"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python riversos.py"
+
+[[workflows.workflow]]
+name = "install_dependencies"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "uv add requests beautifulsoup4 transformers gtts moviepy torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu"
+
+[[workflows.workflow]]
+name = "RiversOS-Web"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python web_interface.py"
+waitForPort = 5000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
